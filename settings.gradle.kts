@@ -15,3 +15,14 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MovieApp"
 include(":app")
+include(":commons:theme")
+include(":commons:provider")
+include(":commons:component")
+include(":data:model")
+include(":data:repository")
+include(":data:remote")
+include(":domain")
+include(":library:framework")
+include(":feature:genre")
+include(":feature:home")
+include(":feature:movie")
