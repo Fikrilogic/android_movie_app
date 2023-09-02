@@ -54,7 +54,7 @@ fun MovieScreen(
     viewModel: MovieViewModel = hiltViewModel(),
     navigationProvider: NavigationProvider = EmptyNavigationProvider
 ) {
-    Log.e("movie screen", "MovieScreen: $navigationProvider", )
+
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 

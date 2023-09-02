@@ -2,6 +2,7 @@ package com.fikrisandi.movie.detail
 
 import android.os.Parcelable
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
@@ -80,12 +83,13 @@ fun MovieDetailScreen(
     val listReview = viewModel.listReviewMovie.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
-        viewModel.getMovieTrailer(movie?.id?.toString() ?: "")
+        if(movie != null) {
+            viewModel.getMovieTrailer(movie?.id?.toString() ?: "")
+            viewModel.getUserMovieReview(movie?.id?.toString() ?: "")
+        }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.getUserMovieReview(movie?.id?.toString() ?: "")
-    }
+
 
     LaunchedEffect(Unit) {
         listStringGenre = listGenre.asFlow().filter { genre ->
@@ -111,6 +115,8 @@ fun MovieDetailScreen(
                         .semantics(mergeDescendants = true) {}
                 )
             }
+
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -124,18 +130,27 @@ fun MovieDetailScreen(
                             .fillMaxWidth()
                             .height(250.dp)
                             .padding(16.dp)
-                            .border(border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary), shape = MaterialTheme.shapes.medium),
+                            .border(
+                                border = BorderStroke(
+                                    2.dp,
+                                    MaterialTheme.colorScheme.secondary
+                                ), shape = MaterialTheme.shapes.medium
+                            ),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
                         SubcomposeAsyncImage(
-                            modifier = Modifier.fillMaxWidth().clip(shape = MaterialTheme.shapes.medium),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(shape = MaterialTheme.shapes.medium),
                             model = "${ConstantVal.IMAGE_BASE_URL}${movie?.backdropPath}",
                             contentDescription = "",
                             contentScale = ContentScale.FillBounds,
                             error = {
                                 Column(
-                                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center
                                 ) {
@@ -187,7 +202,7 @@ fun MovieDetailScreen(
                                     style = MaterialTheme.typography.bodySmall,
                                     textAlign = TextAlign.Justify
                                 )
-                            } else{
+                            } else {
                                 Text(
                                     "-",
                                     style = MaterialTheme.typography.bodySmall,
@@ -274,10 +289,55 @@ fun MovieDetailScreen(
                                                 .padding(8.dp),
                                             verticalArrangement = Arrangement.spacedBy(8.dp),
                                         ) {
-                                            Text(
-                                                reviewData?.author ?: "",
-                                                style = MaterialTheme.typography.titleSmall
-                                            )
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                SubcomposeAsyncImage(
+                                                    modifier = Modifier
+                                                        .size(60.dp)
+                                                        .clip(shape = CircleShape),
+                                                    model = "${ConstantVal.IMAGE_BASE_URL}${reviewData?.authorDetails?.avatarPath.orEmpty()}",
+                                                    contentDescription = "",
+                                                    contentScale = ContentScale.FillBounds,
+                                                    error = {
+                                                        Column(
+                                                            modifier = Modifier
+                                                                .size(60.dp)
+                                                                .background(MaterialTheme.colorScheme.secondary),
+                                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                                            verticalArrangement = Arrangement.Center
+                                                        ) {}
+                                                    },
+                                                    loading = {
+                                                        Column(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                                            verticalArrangement = Arrangement.Center
+                                                        ) {
+                                                            CircularProgressIndicator()
+                                                        }
+                                                    }
+                                                )
+                                                Text(
+                                                    reviewData?.author ?: "",
+                                                    style = MaterialTheme.typography.titleSmall
+                                                )
+                                            }
+
+                                            Row(modifier = Modifier.wrapContentWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                                Text(
+                                                    "Rating: ",
+                                                    style = MaterialTheme.typography.labelSmall
+                                                )
+                                                Text(
+                                                    (reviewData?.authorDetails?.rating
+                                                        ?: 0).toString(),
+                                                    style = MaterialTheme.typography.labelSmall
+                                                )
+                                            }
+
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
