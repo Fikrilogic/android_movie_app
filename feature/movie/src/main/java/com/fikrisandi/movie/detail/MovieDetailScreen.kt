@@ -47,7 +47,6 @@ import coil.compose.SubcomposeAsyncImage
 import com.example.movieapp.common.constant.ConstantVal
 import com.fikrisandi.model.genre.Genre
 import com.fikrisandi.model.movie.Movie
-import com.fikrisandi.provider.EmptyNavigationProvider
 import com.fikrisandi.provider.NavigationProvider
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -84,8 +83,8 @@ fun MovieDetailScreen(
 
     LaunchedEffect(Unit) {
         if(movie != null) {
-            viewModel.getMovieTrailer(movie?.id?.toString() ?: "")
-            viewModel.getUserMovieReview(movie?.id?.toString() ?: "")
+            viewModel.getMovieTrailer(movie.id.toString())
+            viewModel.getUserMovieReview(movie.id.toString())
         }
     }
 

@@ -2,7 +2,6 @@ package com.fikrisandi.home
 
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fikrisandi.genre.list.GenreScreen
 import com.fikrisandi.movie.list.MovieScreen
-import com.fikrisandi.provider.EmptyNavigationProvider
 import com.fikrisandi.provider.NavigationProvider
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
