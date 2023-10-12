@@ -2,7 +2,7 @@ package com.fikrisandi.domain.movie
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.fikrisandi.model.movie.Movie
+import com.fikrisandi.model.remote.movie.Movie
 import com.fikrisandi.repository.repository.movie.MovieRepository
 
 class MoviePagingSource(private val repository: MovieRepository, private val option: Map<String, Any>) :

@@ -2,7 +2,7 @@ package com.fikrisandi.domain.movie
 
 import com.fikrisandi.framework.network.DataState
 import com.fikrisandi.framework.usecase.DataStateUseCase
-import com.fikrisandi.model.movie.Trailer
+import com.fikrisandi.model.remote.movie.Trailer
 import com.fikrisandi.repository.repository.movie.MovieRepository
 import kotlinx.coroutines.flow.FlowCollector
 import javax.inject.Inject

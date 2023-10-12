@@ -1,4 +1,4 @@
-package com.fikrisandi.model.user
+package com.fikrisandi.model.remote.user
 
 
 import com.google.gson.annotations.SerializedName

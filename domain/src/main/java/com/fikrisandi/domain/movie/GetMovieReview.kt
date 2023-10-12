@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.fikrisandi.framework.usecase.FlowPagingUseCase
-import com.fikrisandi.model.user.UserReview
+import com.fikrisandi.model.remote.user.UserReview
 import com.fikrisandi.repository.repository.movie.MovieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

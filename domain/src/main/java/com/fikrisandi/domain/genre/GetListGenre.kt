@@ -3,7 +3,7 @@ package com.fikrisandi.domain.genre
 
 import com.fikrisandi.framework.network.DataState
 import com.fikrisandi.framework.usecase.DataStateUseCase
-import com.fikrisandi.model.genre.Genre
+import com.fikrisandi.model.remote.genre.Genre
 import com.fikrisandi.repository.repository.genre.GenreRepository
 import kotlinx.coroutines.flow.FlowCollector
 import javax.inject.Inject

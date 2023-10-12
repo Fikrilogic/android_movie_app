@@ -1,6 +1,9 @@
 package com.fikrisandi.repository.di
 
 import com.fikrisandi.framework.network.AppHttpClient
+import com.fikrisandi.local.dao.favorite.MovieFavoriteDao
+import com.fikrisandi.repository.repository.favorite.movie.MovieFavoriteRepository
+import com.fikrisandi.repository.repository.favorite.movie.MovieFavoriteRepositoryImpl
 import com.fikrisandi.repository.repository.genre.GenreRepository
 import com.fikrisandi.repository.repository.genre.GenreRepositoryImpl
 import com.fikrisandi.repository.repository.movie.MovieRepository
@@ -22,4 +25,8 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideMovieRepository(appClient: AppHttpClient): MovieRepository = MovieRepositoryImpl(appClient)
+
+    @Provides
+    @Singleton
+    fun provideMovieFavoriteRepository(dao: MovieFavoriteDao): MovieFavoriteRepository = MovieFavoriteRepositoryImpl(dao)
 }

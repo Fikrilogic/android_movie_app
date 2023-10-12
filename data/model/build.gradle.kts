@@ -1,7 +1,8 @@
-import extension.FRAMEWORK
+import extension.addRoomDependency
 
 plugins {
     id("commons.android-library")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -11,5 +12,6 @@ android {
 
 dependencies {
 
+    addRoomDependency()
     implementation(NetworkLibs.ktor_gson)
 }

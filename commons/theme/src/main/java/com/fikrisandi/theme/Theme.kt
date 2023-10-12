@@ -1,7 +1,10 @@
 package com.fikrisandi.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -71,6 +74,15 @@ private val DarkColors = darkColorScheme(
     outlineVariant = md_theme_dark_outlineVariant,
     scrim = md_theme_dark_scrim,
 )
+
+val AppColors: ColorScheme
+    @Composable get() = MaterialTheme.colorScheme
+
+val AppShape: Shapes
+    @Composable get() = MaterialTheme.shapes
+
+val AppTypography: Typography
+    @Composable get() = MaterialTheme.typography
 
 @Composable
 fun AppTheme(

@@ -1,3 +1,4 @@
+import extension.COMPONENT
 import extension.DOMAIN
 import extension.FRAMEWORK
 import extension.GENRE
@@ -27,6 +28,7 @@ ksp{
 dependencies {
     THEME
     PROVIDER
+    COMPONENT
 
     FRAMEWORK
 

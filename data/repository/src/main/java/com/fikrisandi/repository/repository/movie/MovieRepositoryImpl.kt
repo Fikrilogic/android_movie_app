@@ -3,9 +3,9 @@ package com.fikrisandi.repository.repository.movie
 import com.example.movieapp.common.constant.ConstantVal
 import com.fikrisandi.framework.network.AppHttpClient
 import com.fikrisandi.framework.network.DataState
-import com.fikrisandi.model.movie.Movie
-import com.fikrisandi.model.movie.Trailer
-import com.fikrisandi.model.user.UserReview
+import com.fikrisandi.model.remote.movie.Movie
+import com.fikrisandi.model.remote.movie.Trailer
+import com.fikrisandi.model.remote.user.UserReview
 import io.ktor.client.call.body
 import io.ktor.client.request.request
 import io.ktor.http.ContentType

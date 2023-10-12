@@ -1,4 +1,5 @@
 import extension.FRAMEWORK
+import extension.LOCAL
 import extension.MODEL
 import extension.PROVIDER
 import extension.addNetworkDependency
@@ -18,6 +19,7 @@ dependencies {
 
     FRAMEWORK
     MODEL
+    LOCAL
 
     addNetworkDependency()
 }

@@ -1,4 +1,4 @@
-package com.fikrisandi.model.genre
+package com.fikrisandi.model.remote.genre
 
 
 import android.os.Parcelable

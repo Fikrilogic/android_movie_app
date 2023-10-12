@@ -2,7 +2,7 @@ package com.fikrisandi.domain.movie
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.fikrisandi.model.user.UserReview
+import com.fikrisandi.model.remote.user.UserReview
 import com.fikrisandi.repository.repository.movie.MovieRepository
 
 class MovieUserPagingSource(
@@ -20,7 +20,6 @@ class MovieUserPagingSource(
         val page = params.key ?: 1
         return try {
             val id = option["id"]?.toString()
-            println("id = $id")
             val response = repository.getReview(id ?: "", page)
             LoadResult.Page(
                 data = response.results ?: emptyList(),

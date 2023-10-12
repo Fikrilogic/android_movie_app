@@ -175,6 +175,7 @@ fun DependencyHandler.addModule(){
     COMPONENT
 
     MODEL
+    LOCAL
     REPOSITORY
 
     DOMAIN
@@ -197,6 +198,8 @@ val DependencyHandler.FRAMEWORK
 
 val DependencyHandler.MODEL
     get() = implementation(project(mapOf("path" to ":data:model")))
+val DependencyHandler.LOCAL
+    get() = implementation(project(mapOf("path" to ":data:local")))
 val DependencyHandler.REPOSITORY
     get() = implementation(project(mapOf("path" to ":data:repository")))
 val DependencyHandler.DOMAIN

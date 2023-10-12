@@ -1,9 +1,14 @@
 package com.fikrisandi.domain.di
 
+import com.fikrisandi.domain.favorite.movie.AddMovieFavorite
+import com.fikrisandi.domain.favorite.movie.DeleteMovieFavorite
+import com.fikrisandi.domain.favorite.movie.GetListMovieFavorite
+import com.fikrisandi.domain.favorite.movie.GetMovieFavoriteById
 import com.fikrisandi.domain.genre.GetListGenre
 import com.fikrisandi.domain.movie.GetMovieByGenre
 import com.fikrisandi.domain.movie.GetMovieReview
 import com.fikrisandi.domain.movie.GetMovieTrailer
+import com.fikrisandi.repository.repository.favorite.movie.MovieFavoriteRepository
 import com.fikrisandi.repository.repository.genre.GenreRepository
 import com.fikrisandi.repository.repository.movie.MovieRepository
 import dagger.Module
@@ -31,5 +36,25 @@ class DomainModule {
     @Provides
     @Singleton
     fun provideGetMovieTrailer(repository: MovieRepository) = GetMovieTrailer(repository)
+
+    @Provides
+    @Singleton
+    fun provideAddMovieFavorite(repository: MovieFavoriteRepository) = AddMovieFavorite(repository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteMovieFavorite(repository: MovieFavoriteRepository) =
+        DeleteMovieFavorite(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetListMovieFavorite(repository: MovieFavoriteRepository) =
+        GetListMovieFavorite(repository)
+
+
+    @Provides
+    @Singleton
+    fun provideGetMovieFavoriteById(repository: MovieFavoriteRepository) =
+        GetMovieFavoriteById(repository)
 
 }

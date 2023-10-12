@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.fikrisandi.domain.favorite.movie.AddMovieFavorite
 import com.fikrisandi.domain.genre.GetListGenre
 import com.fikrisandi.domain.movie.GetMovieByGenre
-import com.fikrisandi.model.genre.Genre
-import com.fikrisandi.model.movie.Movie
+import com.fikrisandi.framework.base.MvvmViewModel
+import com.fikrisandi.model.remote.genre.Genre
+import com.fikrisandi.model.remote.movie.Movie
+import com.fikrisandi.model.remote.movie.Trailer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,11 +24,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor (private val getMovieByGenre: GetMovieByGenre, private val getListGenre: GetListGenre): ViewModel() {
+class MovieViewModel @Inject constructor(
+    private val getMovieByGenre: GetMovieByGenre,
+    private val getListGenre: GetListGenre
+) : MvvmViewModel() {
 
     private val config = PagingConfig(pageSize = 10, initialLoadSize = 10, prefetchDistance = 10)
 
-    private val _movieState: MutableStateFlow<PagingData<Movie>> = MutableStateFlow(PagingData.empty())
+    private val _movieState: MutableStateFlow<PagingData<Movie>> =
+        MutableStateFlow(PagingData.empty())
     val movieState = _movieState.asStateFlow()
 
     private val _genreState: MutableStateFlow<List<Genre>> = MutableStateFlow(emptyList())
@@ -33,7 +40,7 @@ class MovieViewModel @Inject constructor (private val getMovieByGenre: GetMovieB
 
     private val loading = mutableStateOf(false)
 
-    init{
+    init {
         getListGenre()
     }
 
@@ -41,36 +48,34 @@ class MovieViewModel @Inject constructor (private val getMovieByGenre: GetMovieB
         _movieState.emit(PagingData.empty())
     }
 
-    fun getListGenre(){
-        viewModelScope.launch {
-            getListGenre(Unit).onStart {
-                loading.value = true
-            }.catch {e ->
-                e.printStackTrace()
-            }.collect{state ->
-                _genreState.update { state.results ?: emptyList() }
-                getListMovie(state.results?.firstOrNull()?.id ?: 0)
-                loading.value = false
-            }
+    private fun getListGenre() = safeLaunch {
+        getListGenre(Unit).onStart {
+            loading.value = true
+        }.catch { e ->
+            e.printStackTrace()
+        }.collect { state ->
+            _genreState.update { state.results ?: emptyList() }
+            getListMovie(state.results?.firstOrNull()?.id ?: 0)
+            loading.value = false
         }
     }
 
-    fun getListMovie(index: Int){
-        viewModelScope.launch {
-            getMovieByGenre(GetMovieByGenre.Params(
+    suspend fun getListMovie(index: Int) = safeLaunch {
+        getMovieByGenre(
+            GetMovieByGenre.Params(
                 config = config,
                 option = mapOf(
                     "genre" to index
                 )
-            )).onStart {
-                loading.value = true
-            }.onCompletion {
-                loading.value = false
-            }.catch {e ->
-                e.printStackTrace()
-            }.cachedIn(viewModelScope).collect{
-                _movieState.emit(it)
-            }
+            )
+        ).onStart {
+            loading.value = true
+        }.onCompletion {
+            loading.value = false
+        }.catch { e ->
+            e.printStackTrace()
+        }.cachedIn(viewModelScope).collect {
+            _movieState.emit(it)
         }
     }
 }

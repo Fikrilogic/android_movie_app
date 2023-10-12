@@ -1,4 +1,4 @@
-package com.fikrisandi.model.movie
+package com.fikrisandi.model.remote.movie
 
 
 import com.google.gson.annotations.SerializedName

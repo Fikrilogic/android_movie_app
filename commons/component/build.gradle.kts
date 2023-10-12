@@ -1,3 +1,4 @@
+import extension.THEME
 import extension.addCommonDependency
 
 plugins {
@@ -11,4 +12,6 @@ android {
 }
 
 dependencies {
+
+    THEME
 }

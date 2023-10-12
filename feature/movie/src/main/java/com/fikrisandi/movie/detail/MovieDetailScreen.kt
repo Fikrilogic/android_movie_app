@@ -14,11 +14,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -36,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,9 +50,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.example.movieapp.common.constant.ConstantVal
-import com.fikrisandi.model.genre.Genre
-import com.fikrisandi.model.movie.Movie
+import com.fikrisandi.component.dialog.CustomSquareAlert
+import com.fikrisandi.model.remote.genre.Genre
+import com.fikrisandi.model.remote.movie.Movie
 import com.fikrisandi.provider.NavigationProvider
+import com.fikrisandi.theme.AppColors
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -58,6 +65,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.parcelize.Parcelize
+import com.fikrisandi.theme.R
 
 
 @Parcelize
@@ -80,15 +88,22 @@ fun MovieDetailScreen(
     var listStringGenre by remember { mutableStateOf<List<String>>(emptyList()) }
     val listTrailer = viewModel.listMovieTrailer.collectAsState()
     val listReview = viewModel.listReviewMovie.collectAsLazyPagingItems()
+    val alert by viewModel.alert.collectAsState()
+    val addAsFavorite by viewModel.addAsFavorite.collectAsState()
 
     LaunchedEffect(Unit) {
-        if(movie != null) {
+        if (movie != null) {
             viewModel.getMovieTrailer(movie.id.toString())
             viewModel.getUserMovieReview(movie.id.toString())
+            movie.id?.let {
+                viewModel.checkAddedFavorite(it)
+            }
         }
     }
 
-
+    CustomSquareAlert(message = alert.second, show = alert.first, status = alert.third) {
+        viewModel.endAlert()
+    }
 
     LaunchedEffect(Unit) {
         listStringGenre = listGenre.asFlow().filter { genre ->
@@ -99,7 +114,17 @@ fun MovieDetailScreen(
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
-            title = { Text("Movie", style = MaterialTheme.typography.titleLarge) })
+            title = { Text("Movie", style = MaterialTheme.typography.titleLarge) },
+            navigationIcon = {
+                IconButton(onClick = { navigationProvider.navigateBack() }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_back),
+                        contentDescription = "Kembali",
+                        tint = AppColors.primary
+                    )
+                }
+            }
+        )
 
     }) {
         Column(
@@ -207,6 +232,46 @@ fun MovieDetailScreen(
                                     style = MaterialTheme.typography.bodySmall,
                                     textAlign = TextAlign.Justify
                                 )
+                            }
+                        }
+                        if (movie != null) {
+                            listTrailer.value.firstOrNull()?.let {
+                                when (addAsFavorite) {
+                                    null -> {
+                                        Button(onClick = {
+                                            viewModel.addToFavorite(
+                                                movie,
+                                                trailer = it
+                                            )
+                                        }) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_star_border),
+                                                contentDescription = "Add Favorite"
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                "Tambahkan Dalam Favorite",
+                                                color = AppColors.background
+                                            )
+                                        }
+                                    }
+
+                                    else -> {
+                                        Button(onClick = {
+                                            viewModel.deleteFromFavorite(
+                                                addAsFavorite!!
+                                            )
+                                        }) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_star),
+                                                contentDescription = "Add Favorite",
+                                                tint = AppColors.onTertiary
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text("Favorite", color = AppColors.background)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -325,7 +390,10 @@ fun MovieDetailScreen(
                                                 )
                                             }
 
-                                            Row(modifier = Modifier.wrapContentWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                            Row(
+                                                modifier = Modifier.wrapContentWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
                                                 Text(
                                                     "Rating: ",
                                                     style = MaterialTheme.typography.labelSmall

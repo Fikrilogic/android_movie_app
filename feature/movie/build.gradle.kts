@@ -1,3 +1,4 @@
+import extension.COMPONENT
 import extension.DOMAIN
 import extension.FRAMEWORK
 import extension.MODEL
@@ -26,6 +27,7 @@ ksp{
 dependencies {
     THEME
     PROVIDER
+    COMPONENT
 
     FRAMEWORK
 

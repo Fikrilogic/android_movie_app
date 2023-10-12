@@ -1,7 +1,7 @@
 package com.fikrisandi.repository.repository.genre
 
 import com.fikrisandi.framework.network.DataState
-import com.fikrisandi.model.genre.Genre
+import com.fikrisandi.model.remote.genre.Genre
 
 
 interface GenreRepository {
