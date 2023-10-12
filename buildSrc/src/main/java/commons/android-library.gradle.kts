@@ -1,6 +1,7 @@
 package commons
 
 import com.android.build.api.dsl.BuildType
+import extension.addAndroidTestDependency
 import extension.addCommonDependency
 import extension.addUnitTestDependency
 
@@ -61,4 +62,5 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
     addCommonDependency()
     addUnitTestDependency()
+    addAndroidTestDependency()
 }

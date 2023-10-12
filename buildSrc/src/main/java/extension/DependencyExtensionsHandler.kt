@@ -118,6 +118,7 @@ fun DependencyHandler.addComposeDependency() {
     debugImplementation(ComposeLibs.uiTestManifest)
     implementation(ComposeLibs.activity)
     implementation(ComposeLibs.constraint)
+    androidTestImplementation(TestLibs.composeJunit)
 }
 
 fun DependencyHandler.addUnitTestDependency() {
@@ -126,8 +127,7 @@ fun DependencyHandler.addUnitTestDependency() {
 
 fun DependencyHandler.addAndroidTestDependency() {
     androidTestImplementation(TestLibs.espresso)
-    androidTestImplementation(TestLibs.composeJunit)
-    androidTestImplementation(TestLibs.espresso)
+    androidTestImplementation(TestLibs.jUnitAndroid)
 }
 
 fun DependencyHandler.addHiltDependency() {
