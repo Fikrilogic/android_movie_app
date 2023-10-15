@@ -39,11 +39,20 @@ sealed class BottomBarDestination(
     @DrawableRes val icon: Int
 ) {
 
-    data object GENRE : BottomBarDestination(
+    data object MOVIE : BottomBarDestination(
         label = "Movie", R.drawable.ic_movie
     )
 
-    data object MOVIE : BottomBarDestination(
+    data object SEARCH : BottomBarDestination(
+        label = "Search", com.fikrisandi.theme.R.drawable.ic_search
+    )
+
+    data object FAVORITE : BottomBarDestination(
+        label = "Favorite", com.fikrisandi.theme.R.drawable.ic_star
+    )
+
+    data object GENRE : BottomBarDestination(
         label = "Genre", R.drawable.ic_category
     )
+
 }

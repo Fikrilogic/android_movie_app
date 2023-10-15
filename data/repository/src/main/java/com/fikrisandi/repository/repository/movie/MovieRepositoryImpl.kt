@@ -39,6 +39,24 @@ class MovieRepositoryImpl @Inject constructor(val appHttpClient: AppHttpClient) 
         }
     }
 
+    override suspend fun searchMovie(search: String, page: Int): DataState<List<Movie>> {
+        return try {
+            val result = appHttpClient().request("${ConstantVal.BASE_URL}/search/movie"){
+                method = HttpMethod.Get
+                contentType(ContentType.Application.Json)
+                url {
+                    parameters.append("language", "en-US")
+                    parameters.append("query", search)
+                    parameters.append("page", "$page")
+                }
+            }
+            result.body()
+        } catch (e: Throwable){
+            e.printStackTrace()
+            DataState()
+        }
+    }
+
     override suspend fun getTrailerMovie(id: String): DataState<List<Trailer>> {
         return try {
             val result = appHttpClient().request("${ConstantVal.BASE_URL}/movie/${id}/videos") {

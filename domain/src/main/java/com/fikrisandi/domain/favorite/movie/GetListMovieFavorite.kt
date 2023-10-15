@@ -1,5 +1,6 @@
 package com.fikrisandi.domain.favorite.movie
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -17,6 +18,7 @@ class GetListMovieFavorite @Inject constructor(private val repository: MovieFavo
     )
 
     override fun execute(params: Params): Flow<PagingData<MovieFavoriteEntity>> {
+        Log.e("getlistmoviefavorite", "execute: executed", )
         return Pager(
             config = params.pagingConfig,
             pagingSourceFactory = {

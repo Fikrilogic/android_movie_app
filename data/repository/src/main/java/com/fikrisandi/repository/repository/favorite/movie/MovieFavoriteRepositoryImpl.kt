@@ -1,25 +1,31 @@
 package com.fikrisandi.repository.repository.favorite.movie
 
+import android.util.Log
 import com.fikrisandi.local.dao.favorite.MovieFavoriteDao
 import com.fikrisandi.model.local.MovieFavoriteEntity
 import javax.inject.Inject
 
 class MovieFavoriteRepositoryImpl @Inject constructor(val dao: MovieFavoriteDao) :
     MovieFavoriteRepository {
-    override fun get(id: Int): MovieFavoriteEntity {
+    override suspend fun get(id: Int): MovieFavoriteEntity {
         return dao.get(id)
     }
 
-    override fun get(limit: Int, offset: Int): List<MovieFavoriteEntity> {
-        return dao.get(limit, offset)
+    override suspend fun get(limit: Int, offset: Int): List<MovieFavoriteEntity> {
+        return try {
+            dao.get(limit, offset)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            emptyList()
+        }
     }
 
 
-    override fun insert(data: MovieFavoriteEntity) {
+    override suspend fun insert(data: MovieFavoriteEntity) {
         dao.insert(data)
     }
 
-    override fun delete(data: MovieFavoriteEntity) {
+    override suspend fun delete(data: MovieFavoriteEntity) {
         dao.delete(data)
     }
 }

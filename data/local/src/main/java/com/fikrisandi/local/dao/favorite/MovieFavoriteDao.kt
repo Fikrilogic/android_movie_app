@@ -11,9 +11,9 @@ interface MovieFavoriteDao: BaseDao<MovieFavoriteEntity> {
 
     @Query("SELECT * FROM ${MovieFavoriteEntity.DB_NAME} WHERE id = :id")
     @Throws(IllegalStateException::class)
-    fun get(id: Int): MovieFavoriteEntity
+    suspend fun get(id: Int): MovieFavoriteEntity
 
     @Query("SELECT * FROM ${MovieFavoriteEntity.DB_NAME} LIMIT :limit OFFSET :offset")
-    @Throws(IllegalStateException::class)
-    fun get(limit: Int, offset: Int): List<MovieFavoriteEntity>
+//    @Throws(IllegalStateException::class)
+    suspend fun get(limit: Int, offset: Int): List<MovieFavoriteEntity>
 }

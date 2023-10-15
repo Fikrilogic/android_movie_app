@@ -14,7 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fikrisandi.genre.list.GenreScreen
+import com.fikrisandi.movie.favorite.MovieFavoriteScreen
 import com.fikrisandi.movie.list.MovieScreen
+import com.fikrisandi.movie.search.MovieSearchScreen
 import com.fikrisandi.provider.NavigationProvider
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -34,12 +36,14 @@ fun HomeScreen(
         mutableStateOf(
             listOf(
                 BottomBarDestination.MOVIE,
+                BottomBarDestination.SEARCH,
+                BottomBarDestination.FAVORITE,
                 BottomBarDestination.GENRE,
             )
         )
     }
 
-    Crossfade(targetState = selectedIndex, label = "bottom_navigation") {index ->
+    Crossfade(targetState = selectedIndex, label = "bottom_navigation") { index ->
         Scaffold(bottomBar = {
             HomeBottomBar(
                 modifier = modifier.fillMaxWidth(),
@@ -51,13 +55,37 @@ fun HomeScreen(
 
         }) {
             val modifier = Modifier.padding(it)
-            when(listScreen[index]){
+            when (listScreen[index]) {
                 BottomBarDestination.MOVIE -> {
-                    MovieScreen(modifier = modifier,navigationProvider = navigationProvider, viewModel = hiltViewModel())
+                    MovieScreen(
+                        modifier = modifier,
+                        navigationProvider = navigationProvider,
+                        viewModel = hiltViewModel()
+                    )
                 }
 
                 BottomBarDestination.GENRE -> {
-                    GenreScreen(modifier = modifier,navigationProvider = navigationProvider, viewModel = hiltViewModel())
+                    GenreScreen(
+                        modifier = modifier,
+                        navigationProvider = navigationProvider,
+                        viewModel = hiltViewModel()
+                    )
+                }
+
+                BottomBarDestination.SEARCH -> {
+                    MovieSearchScreen(
+                        modifier = modifier,
+                        navigationProvider = navigationProvider,
+                        viewModel = hiltViewModel()
+                    )
+                }
+
+                BottomBarDestination.FAVORITE -> {
+                    MovieFavoriteScreen(
+                        modifier = modifier,
+                        navigationProvider = navigationProvider,
+                        viewModel = hiltViewModel()
+                    )
                 }
             }
         }

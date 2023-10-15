@@ -53,6 +53,7 @@ import com.example.movieapp.common.constant.ConstantVal
 import com.fikrisandi.component.dialog.CustomSquareAlert
 import com.fikrisandi.model.remote.genre.Genre
 import com.fikrisandi.model.remote.movie.Movie
+import com.fikrisandi.model.remote.movie.Trailer
 import com.fikrisandi.provider.NavigationProvider
 import com.fikrisandi.theme.AppColors
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -80,10 +81,11 @@ data class MovieDetailParams(
 @Composable
 fun MovieDetailScreen(
     modifier: Modifier = Modifier,
+    viewModel: DetailMovieViewModel = hiltViewModel(),
+    navigationProvider: NavigationProvider,
     movie: Movie?,
     listGenre: Array<Genre> = emptyArray(),
-    viewModel: DetailMovieViewModel = hiltViewModel(),
-    navigationProvider: NavigationProvider
+    trailer: Trailer?,
 ) {
     var listStringGenre by remember { mutableStateOf<List<String>>(emptyList()) }
     val listTrailer = viewModel.listMovieTrailer.collectAsState()
@@ -93,7 +95,7 @@ fun MovieDetailScreen(
 
     LaunchedEffect(Unit) {
         if (movie != null) {
-            viewModel.getMovieTrailer(movie.id.toString())
+            if (trailer == null) viewModel.getMovieTrailer(movie.id.toString())
             viewModel.getUserMovieReview(movie.id.toString())
             movie.id?.let {
                 viewModel.checkAddedFavorite(it)
@@ -106,9 +108,11 @@ fun MovieDetailScreen(
     }
 
     LaunchedEffect(Unit) {
-        listStringGenre = listGenre.asFlow().filter { genre ->
-            movie?.genreIds?.contains(genre.id) == true
-        }.map { it.name ?: "" }.toList()
+        listStringGenre = if (listGenre.isNotEmpty())
+            listGenre.asFlow().filter { genre ->
+                movie?.genreIds?.contains(genre.id) == true
+            }.map { it.name ?: "" }.toList()
+        else emptyList()
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
@@ -212,67 +216,107 @@ fun MovieDetailScreen(
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Justify
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                "Genre: ", style = MaterialTheme.typography.bodySmall,
-                                textAlign = TextAlign.Justify
-                            )
-                            if (listStringGenre.isNotEmpty()) {
-                                Text(
-                                    listStringGenre.joinToString(","),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    textAlign = TextAlign.Justify
-                                )
-                            } else {
-                                Text(
-                                    "-",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    textAlign = TextAlign.Justify
-                                )
+                        when {
+                            listStringGenre.isNotEmpty() -> {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        "Genre: ", style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Justify
+                                    )
+                                    Text(
+                                        listStringGenre.joinToString(","),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Justify
+                                    )
+                                }
                             }
                         }
-                        if (movie != null) {
-                            listTrailer.value.firstOrNull()?.let {
-                                when (addAsFavorite) {
-                                    null -> {
-                                        Button(onClick = {
-                                            viewModel.addToFavorite(
-                                                movie,
-                                                trailer = it
-                                            )
-                                        }) {
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_star_border),
-                                                contentDescription = "Add Favorite"
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(
-                                                "Tambahkan Dalam Favorite",
-                                                color = AppColors.background
-                                            )
+                        movie?.let {
+                            when (trailer) {
+                                null -> {
+                                    listTrailer.value.firstOrNull()?.let { item ->
+                                        when (addAsFavorite) {
+                                            null -> {
+                                                Button(onClick = {
+                                                    viewModel.addToFavorite(
+                                                        it,
+                                                        trailer = item
+                                                    )
+                                                }) {
+                                                    Icon(
+                                                        painter = painterResource(id = R.drawable.ic_star_border),
+                                                        contentDescription = "Add Favorite"
+                                                    )
+                                                    Spacer(modifier = Modifier.width(8.dp))
+                                                    Text(
+                                                        "Tambahkan Dalam Favorite",
+                                                        color = AppColors.background
+                                                    )
+                                                }
+                                            }
+
+                                            else -> {
+                                                Button(onClick = {
+                                                    viewModel.deleteFromFavorite(
+                                                        addAsFavorite!!
+                                                    )
+                                                }) {
+                                                    Icon(
+                                                        painter = painterResource(id = R.drawable.ic_star),
+                                                        contentDescription = "Add Favorite",
+                                                        tint = AppColors.onTertiary
+                                                    )
+                                                    Spacer(modifier = Modifier.width(8.dp))
+                                                    Text("Favorite", color = AppColors.background)
+                                                }
+                                            }
                                         }
                                     }
+                                }
 
-                                    else -> {
-                                        Button(onClick = {
-                                            viewModel.deleteFromFavorite(
-                                                addAsFavorite!!
-                                            )
-                                        }) {
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_star),
-                                                contentDescription = "Add Favorite",
-                                                tint = AppColors.onTertiary
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text("Favorite", color = AppColors.background)
+                                else -> {
+                                    when (addAsFavorite) {
+                                        null -> {
+                                            Button(onClick = {
+                                                viewModel.addToFavorite(
+                                                    it,
+                                                    trailer = trailer
+                                                )
+                                            }) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.ic_star_border),
+                                                    contentDescription = "Add Favorite"
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Text(
+                                                    "Tambahkan Dalam Favorite",
+                                                    color = AppColors.background
+                                                )
+                                            }
+                                        }
+
+                                        else -> {
+                                            Button(onClick = {
+                                                viewModel.deleteFromFavorite(
+                                                    addAsFavorite!!
+                                                )
+                                            }) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.ic_star),
+                                                    contentDescription = "Add Favorite",
+                                                    tint = AppColors.onTertiary
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Text("Favorite", color = AppColors.background)
+                                            }
                                         }
                                     }
                                 }
                             }
+
                         }
                     }
                 }
@@ -296,11 +340,23 @@ fun MovieDetailScreen(
                                         object : AbstractYouTubePlayerListener() {
                                             override fun onReady(youTubePlayer: YouTubePlayer) {
                                                 super.onReady(youTubePlayer)
-                                                if (listTrailer.value.isNotEmpty()) {
-                                                    youTubePlayer.loadVideo(
-                                                        listTrailer.value.firstOrNull()?.key ?: "",
-                                                        0f
-                                                    )
+                                                when (trailer) {
+                                                    null -> {
+                                                        if (listTrailer.value.isNotEmpty()) {
+                                                            youTubePlayer.loadVideo(
+                                                                listTrailer.value.firstOrNull()?.key
+                                                                    ?: "",
+                                                                0f
+                                                            )
+                                                        }
+                                                    }
+
+                                                    else -> {
+                                                        youTubePlayer.loadVideo(
+                                                            trailer.key ?: "",
+                                                            0f
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }

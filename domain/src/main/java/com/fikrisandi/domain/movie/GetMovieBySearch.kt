@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class GetMovieByGenre @Inject constructor(private val repository: MovieRepository) :
-    FlowPagingUseCase<GetMovieByGenre.Params, Movie>() {
-
+class GetMovieBySearch @Inject constructor(private val repository: MovieRepository): FlowPagingUseCase<GetMovieBySearch.Params, Movie>() {
     data class Params(
         val config: PagingConfig,
         val option: Map<String, Any>
@@ -22,7 +20,7 @@ class GetMovieByGenre @Inject constructor(private val repository: MovieRepositor
     override fun execute(params: Params): Flow<PagingData<Movie>> {
         return Pager(
             config = params.config,
-            pagingSourceFactory = { MoviePagingSource(repository, params.option) }
+            pagingSourceFactory = { MoviePagingSearchSource(repository, params.option) }
         ).flow.flowOn(Dispatchers.IO)
     }
 }

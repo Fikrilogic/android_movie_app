@@ -5,10 +5,10 @@ import androidx.paging.PagingState
 import com.fikrisandi.model.remote.movie.Movie
 import com.fikrisandi.repository.repository.movie.MovieRepository
 
-class MoviePagingSource(private val repository: MovieRepository, private val option: Map<String, Any>) :
-    PagingSource<Int, Movie>() {
-
-
+class MoviePagingSearchSource(
+    private val repository: MovieRepository,
+    private val option: Map<String, Any>
+) : PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -19,8 +19,8 @@ class MoviePagingSource(private val repository: MovieRepository, private val opt
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val page = params.key ?: 1
         return try {
-            val genre = option["genre"]?.toString()?.toIntOrNull()
-            val response = repository.getAllByGenre(genre ?: 0, page)
+            val search = option["search"]?.toString().orEmpty()
+            val response = repository.searchMovie(search, page)
             LoadResult.Page(
                 data = response.results ?: emptyList(),
                 prevKey = if (page == 1) null else page - 1,

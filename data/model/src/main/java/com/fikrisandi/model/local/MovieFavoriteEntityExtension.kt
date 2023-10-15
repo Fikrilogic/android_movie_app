@@ -20,3 +20,20 @@ fun Movie.toEntity(trailer: Trailer) = MovieFavoriteEntity(
     voteCount = this.voteCount,
     trailer = trailer
 )
+
+fun MovieFavoriteEntity.toModel() = Movie(
+    id = this.id,
+    title = this.title,
+    originalTitle = this.originalTitle,
+    overview = this.overview,
+    backdropPath = this.backdropPath,
+    posterPath = this.posterPath,
+    releaseDate = this.releaseDate,
+    originalLanguage = this.originalLanguage,
+    adult = this.adult,
+    genreIds = emptyList(),
+    voteCount = this.voteCount,
+    voteAverage = this.voteAverage,
+    video = this.video,
+    popularity = this.popularity,
+)

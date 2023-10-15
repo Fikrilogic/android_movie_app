@@ -1,9 +1,12 @@
 package com.fikrisandi.model.remote.movie
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Trailer(
     @SerializedName("id")
     @Expose
@@ -35,4 +38,4 @@ data class Trailer(
     @SerializedName("type")
     @Expose
     var type: String? = null
-)
+): Parcelable

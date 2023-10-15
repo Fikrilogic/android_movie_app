@@ -68,8 +68,10 @@ fun MovieScreen(
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
-            title = { Text("Movie", style = MaterialTheme.typography.titleLarge) })
-
+            title = {
+                Text("Movie", style = MaterialTheme.typography.titleLarge)
+            }
+        )
     }) {
         Column(
             modifier = modifier
@@ -97,7 +99,8 @@ fun MovieScreen(
                                         viewModel.clearMovieState()
                                         viewModel.getListMovie(value.id ?: 0)
                                     }
-                                }) {
+                                },
+                            ) {
 
                                 Column(
                                     Modifier
@@ -182,7 +185,7 @@ fun MovieScreen(
                                 ) {
                                     Text("Rating", style = MaterialTheme.typography.bodySmall)
                                     Text(
-                                        (data?.voteAverage ?: 0f).toString(),
+                                        (data?.voteAverage ?: 0.0).toString(),
                                         style = MaterialTheme.typography.bodySmall
                                     )
                                 }

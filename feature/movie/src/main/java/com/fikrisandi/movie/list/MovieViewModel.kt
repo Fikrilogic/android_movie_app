@@ -1,18 +1,15 @@
 package com.fikrisandi.movie.list
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.fikrisandi.domain.favorite.movie.AddMovieFavorite
 import com.fikrisandi.domain.genre.GetListGenre
 import com.fikrisandi.domain.movie.GetMovieByGenre
 import com.fikrisandi.framework.base.MvvmViewModel
 import com.fikrisandi.model.remote.genre.Genre
 import com.fikrisandi.model.remote.movie.Movie
-import com.fikrisandi.model.remote.movie.Trailer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +17,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,15 +45,19 @@ class MovieViewModel @Inject constructor(
     }
 
     private fun getListGenre() = safeLaunch {
-        getListGenre(Unit).onStart {
-            loading.value = true
-        }.catch { e ->
-            e.printStackTrace()
-        }.collect { state ->
-            _genreState.update { state.results ?: emptyList() }
-            getListMovie(state.results?.firstOrNull()?.id ?: 0)
-            loading.value = false
-        }
+        getListGenre(Unit)
+            .onStart {
+                loading.value = true
+            }.catch { e ->
+                e.printStackTrace()
+            }.collect { state ->
+                val data = state.results.orEmpty()
+                _genreState.update {
+                    data.toList()
+                }
+                getListMovie(data.firstOrNull()?.id ?: 0)
+                loading.value = false
+            }
     }
 
     suspend fun getListMovie(index: Int) = safeLaunch {

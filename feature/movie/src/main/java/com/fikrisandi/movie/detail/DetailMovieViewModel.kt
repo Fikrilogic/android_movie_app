@@ -75,12 +75,8 @@ class DetailMovieViewModel @Inject constructor(
                     "id" to id
                 )
             )
-        ).onStart {
-            loading.value = true
-        }.catch { error ->
+        ).catch { error ->
             handleError(error)
-        }.onCompletion {
-            loading.value = false
         }.cachedIn(viewModelScope).collect {
             _listReviewMovie.emit(it)
         }
@@ -106,6 +102,10 @@ class DetailMovieViewModel @Inject constructor(
         )
 
         getMovieFavoriteById(params)
+            .onStart { loading.value = true }
+            .onCompletion {
+                loading.value = false
+            }
             .catch {
                 handleError(it)
                 _addAsFavorite.emit(null)
